@@ -37,7 +37,7 @@ First in order to initialize the informations for OVH API requests, run:
     ovh-api-client --initApp
 
 You will be prompted to configure the OVH API application and the consumer key to use
-(see [`ovh-api-clients`'s repo](https://github.com/aureooms/ovh-api-client) for more informations).
+(see [`ovh-api-client`'s repo](https://github.com/aureooms/ovh-api-client) for more informations).
 
 
 Configuration
