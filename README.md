@@ -46,7 +46,7 @@ Configure the OVH API application AND the consumer key to use
 (see [`ovh-api-client`'s repo](https://github.com/aureooms/ovh-api-client) for more informations).
 
 
-Add a new crontab to run this script using the right subdomain and domain,
+Add a new crontab (`crontab -e`) to run this script using the right subdomain and domain,
 for example (using [`myip`](https://github.com/aureooms/myip)):
 
     */5 * * * * bash -c 'ovh-dns --target EU --domain example.com --subdomain www --ip "$(myip public)"'
