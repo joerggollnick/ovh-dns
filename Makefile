@@ -1,12 +1,9 @@
-LIBS_FOLDER = "./libs"
+PREFIX ?= /usr
+BINDIR = $(PREFIX)/bin
 
-dependencies:
-	curl -Ls -o $(LIBS_FOLDER)/JSON.sh --create-dirs https://github.com/dominictarr/JSON.sh/raw/master/JSON.sh
-	chmod +x $(LIBS_FOLDER)/JSON.sh
-	curl -Ls -o ovh-api-bash-client.sh https://github.com/denouche/ovh-api-bash-client/raw/master/ovh-api-bash-client.sh
-	chmod +x ovh-api-bash-client.sh
+install: install-bin
 
-install: dependencies
-	./ovh-api-bash-client.sh --initApp
-
-
+install-bin:
+	@echo -e '\033[1;32minstalling scripts...\033[0m'
+	mkdir -p "$(DESTDIR)$(BINDIR)"
+	install -Dm755 bin/* "$(DESTDIR)$(BINDIR)"
