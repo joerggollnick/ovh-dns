@@ -47,7 +47,7 @@ requestApi()
         PARAMS+=("--data")
         PARAMS+=("$DATA")
     fi
-    RESPONSE=$( $CURRENT_PATH/ovh-api-bash-client.sh "${PARAMS[@]}" )
+    RESPONSE=$( ovh-api-client "${PARAMS[@]}" )
     HTTP_STATUS="$( echo $RESPONSE | cut -d' ' -f1 )"
     HTTP_RESPONSE="$( echo $RESPONSE | cut -d' ' -f2- )"
     echo $HTTP_STATUS
