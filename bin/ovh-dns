@@ -12,6 +12,7 @@ help()
     echo "  --ip <ip>               : the ip address for this A record"
     echo "  --domain <domain>       : the domain on which update the A record in the DNS zone"
     echo "  --subdomain <subdomain> : (optional) the subdomain for this A record"
+    echo "  --target <target>       : (optional) the target API endpoint (default is EU)"
     echo
 }
 

@@ -47,7 +47,7 @@ Configuration
 Just add a new crontab to run this script using the right subdomain and domain,
 for example (using [`myip`](https://github.com/aureooms/myip)):
 
-    * * * * * ovh-dns --domain mydomain.com --subdomain home --ip "$(myip public)"
+    * * * * * ovh-dns --target EU --domain mydomain.com --subdomain home --ip "$(myip public)"
 
 This crontab will check every minute that the following record targets the right IP address :
 
