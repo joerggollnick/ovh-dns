@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+CACHE="${HOME}/.cache/ovh-dns/oldip"
+
+oldip="$(cat "${CACHE}")"
+newip="$(myip public)"
+
+if [ -z "${newip}" ] ; then
+  >&2 echo "[ERROR] could not resolve global IP address"
+  exit 1
+fi
+
+if [ "${newip}" = "${oldip}" ] ; then
+  >&2 echo "[INFO] IP address did not change (${oldip})"
+  exit 0
+fi
+
+ovh-dns "$@" --ip "${newip}"
+
+if "$?" ; then
+  mkdir -p "$(dirname "${CACHE}")"
+  echo "${newip}" > "${CACHE}"
+  >&2 echo "[INFO] successfully updated IP address from ${oldip} to ${newip}"
+  exit 0
+else
+  >&2 echo "[ERROR] could not update IP address from ${oldip} to ${newip}"
+  exit 2
+fi

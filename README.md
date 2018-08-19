@@ -49,13 +49,18 @@ Configure the OVH API application AND the consumer key to use
 Add a new crontab to run this script using the right subdomain and domain,
 for example (using [`myip`](https://github.com/aureooms/myip)):
 
-    */5 * * * * bash -c 'ovh-dns --target EU --domain mydomain.com --subdomain home --ip "$(myip public)"'
+    */5 * * * * bash -c 'ovh-dns --target EU --domain example.com --subdomain www --ip "$(myip public)"'
 
 This crontab will check every 5 minutes that the following record targets the right IP address :
 
-    home.mydomain.com.    60    IN A   1.2.3.4
+    www.example.com.    60    IN A   1.2.3.4
 
 If the target IP address is incorrect, it will update the value.
+
+If you only want to query the API when the machine's IP changes and have `myip`
+installed, you can use the more convenient
+
+    */5 * * * * ovh-dns-watch --target EU --domain example.com --subdomain www
 
 
 Informations
