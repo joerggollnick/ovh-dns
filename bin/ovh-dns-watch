@@ -17,7 +17,7 @@ fi
 
 ovh-dns "$@" --ip "${newip}"
 
-if "$?" ; then
+if [ "$?" -eq 0 ] ; then
   mkdir -p "$(dirname "${CACHE}")"
   echo "${newip}" > "${CACHE}"
   >&2 echo "[INFO] successfully updated IP address from ${oldip} to ${newip}"
