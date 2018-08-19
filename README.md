@@ -21,35 +21,37 @@ Depends on the following core utilities
   - [`ping`](http://man7.org/linux/man-pages/man8/ping.8.html)
 
 
-Initialize
+Install
 ----------
-
-### Install
 
 To install, run:
 
     make DESTDIR=/ PREFIX=/usr install
 
 
-### First initialization
-
-First in order to initialize the informations for OVH API requests, run:
-
-    ovh-api-client --initApp
-
-You will be prompted to configure the OVH API application and the consumer key to use
-(see [`ovh-api-client`'s repo](https://github.com/aureooms/ovh-api-client) for more informations).
-
-
 Configuration
 -------------
 
-Just add a new crontab to run this script using the right subdomain and domain,
+Create a new user, for instance `ovh`
+
+    useradd -m -s /bin/bash ovh
+    passwd ovh
+    su ovh
+
+Generate a configuration for OVH API requests, run:
+
+    ovh-api-client --initApp
+
+Configure the OVH API application AND the consumer key to use
+(see [`ovh-api-client`'s repo](https://github.com/aureooms/ovh-api-client) for more informations).
+
+
+Add a new crontab to run this script using the right subdomain and domain,
 for example (using [`myip`](https://github.com/aureooms/myip)):
 
-    * * * * * ovh-dns --target EU --domain mydomain.com --subdomain home --ip "$(myip public)"
+    */5 * * * * bash -c 'ovh-dns --target EU --domain mydomain.com --subdomain home --ip "$(myip public)"'
 
-This crontab will check every minute that the following record targets the right IP address :
+This crontab will check every 5 minutes that the following record targets the right IP address :
 
     home.mydomain.com.    60    IN A   1.2.3.4
 
