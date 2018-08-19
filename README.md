@@ -11,6 +11,7 @@ Depends on the following executables
 (might need manual installation):
 
   - [`ovh-api-client`](https://github.com/aureooms/ovh-api-client)
+  - [`jq`](https://stedolan.github.io/jq)
   - [`bash`](https://www.gnu.org/software/bash)
 
 Depends on the following core utilities
