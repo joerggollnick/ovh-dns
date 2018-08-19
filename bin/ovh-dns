@@ -3,15 +3,13 @@
 # original code @ https://github.com/denouche/ovh-dyndns
 
 # DEFAULT CONFIG
-LIBS="libs"
-GET_IP_URL="http://ipecho.net/plain"
-CURRENT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 API_TARGET="EU"
 
 help()
 {
     echo
     echo "Help: possible arguments are:"
+    echo "  --ip <ip>               : the ip address for this A record"
     echo "  --domain <domain>       : the domain on which update the A record in the DNS zone"
     echo "  --subdomain <subdomain> : (optional) the subdomain for this A record"
     echo
@@ -55,38 +53,15 @@ requestApi()
     echo $HTTP_STATUS
 }
 
-updateIp()
-{
-    IP=$(wget -q -O - $GET_IP_URL)
-}
-
-getJSONString()
-{
-    JSON="$1"
-    FIELD="$2"
-    RESULT=$(getJSONValue "$JSON" "$FIELD")
-    echo ${RESULT:1:-1}
-}
-
-getJSONValue()
-{
-    JSON="$1"
-    FIELD="$2"
-    RESULT=$(echo $JSON | $CURRENT_PATH/$LIBS/JSON.sh -l | grep "\[$FIELD\]" | sed -r "s/\[$FIELD\]\s+(.*)/\1/")
-    echo ${RESULT}
-}
-
-getJSONArrayLength()
-{
-    JSON="$1"
-    echo $JSON | $CURRENT_PATH/$LIBS/JSON.sh -l | wc -l
-}
-
 parseArguments()
 {
     while [ $# -gt 0 ]
     do
         case $1 in
+        --ip)
+            shift
+            IP=$1
+            ;;
         --domain)
             shift
             DOMAIN=$1
@@ -105,6 +80,13 @@ checkArgumentsValids()
     if [ -z $DOMAIN ]
     then
         echo "No domain given"
+        help
+        exit 1
+    fi
+
+    if [ -z $IP ]
+    then
+        echo "No IP address given"
         help
         exit 1
     fi
@@ -132,17 +114,16 @@ main()
     checkArgumentsValids
     checkInternetConnexion
 
-    updateIp
     getIds
 
-    if [ $(getJSONArrayLength $IDS) -gt 1 ]
+    if [ $(echo $IDS | jq length) -gt 1 ]
     then
         echo "Error, multiple results found for record"
         echo "$IDS"
         i=0
-        while [ $i -lt $(getJSONArrayLength $IDS) ]
+        while [ $i -lt $(echo $IDS | jq length) ]
         do
-            CURRENT_ID=$(getJSONValue $IDS $i)
+            CURRENT_ID=$(echo $IDS | jq ".[$i]")
             requestApi "/domain/zone/$DOMAIN/record/$CURRENT_ID" 'DELETE' > /dev/null
             i=$((i+1))
         done
@@ -150,7 +131,7 @@ main()
         getIds
     fi
 
-    if [ $(getJSONArrayLength $IDS) -eq 0 ]
+    if [ $(echo $IDS | jq length) -eq 0 ]
     then
         # No record found, create one
         requestApi "/domain/zone/$DOMAIN/record" 'POST' '{"target": "'$IP'", "subDomain": "'$SUBDOMAIN'", "fieldType": "A", "ttl": 60}' > /dev/null
@@ -158,14 +139,14 @@ main()
         exit 0
     fi
 
-    RECORD=$(getJSONValue $IDS '0')
+    RECORD=$(echo $IDS | jq '.[0]')
     requestApi "/domain/zone/$DOMAIN/record/$RECORD" > /dev/null
     if [ $HTTP_STATUS -ne 200 ]
     then
         echo "Error: $HTTP_STATUS $HTTP_RESPONSE"
         exit 1
     fi
-    RECORD_IP=$(getJSONString $HTTP_RESPONSE '"target"')
+    RECORD_IP=$(echo $HTTP_RESPONSE | jq -r '.target')
 
     if [ $IP != $RECORD_IP ]
     then
