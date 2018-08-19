@@ -75,7 +75,7 @@ parseArguments()
     done
 }
 
-checkArgumentsValids()
+checkArgumentsValidity()
 {
     if [ -z $DOMAIN ]
     then
@@ -111,7 +111,7 @@ getIds ()
 main()
 {
     parseArguments "$@"
-    checkArgumentsValids
+    checkArgumentsValidity
     checkInternetConnexion
 
     getIds
