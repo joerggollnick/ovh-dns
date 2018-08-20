@@ -56,14 +56,9 @@ This crontab will check every 5 minutes that the following record targets the ri
     www.example.com.    60    IN A   1.2.3.4
 
 If the target IP address is incorrect, it will update the value.
+If the A record is not found, it will be created.
 
 If you only want to query the API when the machine's IP changes and have `myip`
-installed, you can use the more convenient
+and `xxhsum` installed, you can use the more convenient
 
     */5 * * * * ovh-dns-watch --target EU --domain example.com --subdomain www
-
-
-Informations
-------------
-
-If the A record is not found, it will be created.
