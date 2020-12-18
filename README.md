@@ -1,7 +1,8 @@
 OVH DNS
 =======
 
-Use this script in a cron to update a given A record in your DNS zone, using OVH API.
+Use this script in a cron to update a given A/AAAA/... record in your DNS zone,
+using OVH API.
 
 
 Dependencies
@@ -49,7 +50,7 @@ Configure the OVH API application AND the consumer key to use
 Add a new crontab (`crontab -e`) to run this script using the right subdomain and domain,
 for example (using [`myip`](https://github.com/aureooms/myip)):
 
-    */5 * * * * bash -c 'ovh-dns --target EU --domain example.com --subdomain www --ip "$(myip public)"'
+    */5 * * * * bash -c 'ovh-dns --target EU --domain example.com --subdomain www --fieldtype A --ttl 60 --ip "$(myip public)"'
 
 This crontab will check every 5 minutes that the following record targets the right IP address :
 
@@ -61,4 +62,4 @@ If the A record is not found, it will be created.
 If you only want to query the API when the machine's IP changes and have `myip`
 and `xxhsum` installed, you can use the more convenient
 
-    */5 * * * * ovh-dns-watch --target EU --domain example.com --subdomain www
+    */5 * * * * ovh-dns-watch --target EU --domain example.com --subdomain www --fieldtype A --ttl 60
