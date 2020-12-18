@@ -4,14 +4,18 @@
 
 # DEFAULT CONFIG
 API_TARGET="EU"
+FIELDTYPE="A"
+TTL=60
 
 help()
 {
     echo
     echo "Help: possible arguments are:"
-    echo "  --ip <ip>               : the ip address for this A record"
-    echo "  --domain <domain>       : the domain on which update the A record in the DNS zone"
-    echo "  --subdomain <subdomain> : (optional) the subdomain for this A record"
+    echo "  --ip <ip>               : the ip address for this record"
+    echo "  --domain <domain>       : the domain on which update the record in the DNS zone"
+    echo "  --subdomain <subdomain> : (optional) the subdomain for this record"
+    echo "  --fieldtype <fieldtype> : (optional) type for this record (default is A)"
+    echo "  --ttl <ttl>             : (optional) time to live value for this record (default is 60)"
     echo "  --target <target>       : (optional) the target API endpoint (default is EU)"
     echo
 }
@@ -71,6 +75,14 @@ parseArguments()
             shift
             SUBDOMAIN=$1
             ;;
+        --fieldtype)
+            shift
+            FIELDTYPE=$1
+            ;;
+        --ttl)
+            shift
+            TTL=$1
+            ;;
         esac
         shift
     done
@@ -100,7 +112,7 @@ refreshZone()
 
 getIds ()
 {
-    requestApi "/domain/zone/$DOMAIN/record?subDomain=$SUBDOMAIN&fieldType=A" > /dev/null
+    requestApi "/domain/zone/$DOMAIN/record?subDomain=$SUBDOMAIN&fieldType=$FIELDTYPE" > /dev/null
     if [ $HTTP_STATUS -ne 200 ]
     then
         echo "Error: $HTTP_STATUS $HTTP_RESPONSE"
@@ -135,7 +147,7 @@ main()
     if [ $(echo $IDS | jq length) -eq 0 ]
     then
         # No record found, create one
-        requestApi "/domain/zone/$DOMAIN/record" 'POST' '{"target": "'$IP'", "subDomain": "'$SUBDOMAIN'", "fieldType": "A", "ttl": 60}' > /dev/null
+        requestApi "/domain/zone/$DOMAIN/record" 'POST' '{"target": "'$IP'", "subDomain": "'$SUBDOMAIN'", "fieldType": "'$FIELDTYPE'", "ttl": "'$TTL'"}' > /dev/null
         refreshZone
         exit 0
     fi
@@ -151,7 +163,7 @@ main()
 
     if [ $IP != $RECORD_IP ]
     then
-        requestApi "/domain/zone/$DOMAIN/record/$RECORD" 'PUT' '{"target":"'$IP'", "ttl": 60}' > /dev/null
+        requestApi "/domain/zone/$DOMAIN/record/$RECORD" 'PUT' '{"target":"'$IP'", "ttl": "'$TTL'"}' > /dev/null
         refreshZone
     fi
 }
