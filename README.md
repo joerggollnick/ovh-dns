@@ -1,3 +1,4 @@
+:phone:
 OVH DNS
 =======
 
@@ -5,6 +6,7 @@ Use this script in a cron to update a given A/AAAA/... record in your DNS zone,
 using OVH API.
 
 
+:school_satchel:
 Dependencies
 ----------
 
@@ -22,7 +24,9 @@ Depends on the following core utilities
   - [`ping`](http://man7.org/linux/man-pages/man8/ping.8.html)
 
 
+:minidisc:
 Install
+[![AUR package](https://img.shields.io/aur/version/ovh-dns)](https://aur.archlinux.org/packages/ovh-dns)
 ----------
 
 To install, run:
@@ -30,6 +34,7 @@ To install, run:
     make DESTDIR=/ PREFIX=/usr install
 
 
+:woman_technologist:
 Configuration
 -------------
 
@@ -47,6 +52,10 @@ Configure the OVH API application AND the consumer key to use
 (see [`ovh-api-client`'s repo](https://github.com/aureooms/ovh-api-client) for more informations).
 
 
+:woman_astronaut:
+Usage
+--
+
 Add a new crontab (`crontab -e`) to run this script using the right subdomain and domain,
 for example (using [`myip`](https://github.com/aureooms/myip)):
 
@@ -63,3 +72,21 @@ If you only want to query the API when the machine's IP changes and have `myip`
 and `xxhsum` installed, you can use the more convenient
 
     */5 * * * * ovh-dns-watch --target EU --domain example.com --subdomain www --fieldtype A --ttl 60
+
+
+:open_book:
+Help
+--
+
+```
+> ovh-dns
+No domain given
+
+Help: possible arguments are:
+  --ip <ip>               : the ip address for this record
+  --domain <domain>       : the domain on which update the record in the DNS zone
+  --subdomain <subdomain> : (optional) the subdomain for this record
+  --fieldtype <fieldtype> : (optional) type for this record (default is A)
+  --ttl <ttl>             : (optional) time to live value for this record (default is 60)
+  --target <target>       : (optional) the target API endpoint (default is EU)
+```
