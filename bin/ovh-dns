@@ -147,7 +147,7 @@ main()
     if [ $(echo $IDS | jq length) -eq 0 ]
     then
         # No record found, create one
-        requestApi "/domain/zone/$DOMAIN/record" 'POST' '{"target": "'$IP'", "subDomain": "'$SUBDOMAIN'", "fieldType": "'$FIELDTYPE'", "ttl": "'$TTL'"}' > /dev/null
+        requestApi "/domain/zone/$DOMAIN/record" 'POST' '{"target": "'$IP'", "subDomain": "'$SUBDOMAIN'", "fieldType": "'$FIELDTYPE'", "ttl": '$TTL'}' > /dev/null
         refreshZone
         exit 0
     fi
@@ -163,7 +163,7 @@ main()
 
     if [ $IP != $RECORD_IP ]
     then
-        requestApi "/domain/zone/$DOMAIN/record/$RECORD" 'PUT' '{"target":"'$IP'", "ttl": "'$TTL'"}' > /dev/null
+        requestApi "/domain/zone/$DOMAIN/record/$RECORD" 'PUT' '{"target":"'$IP'", "ttl": '$TTL'}' > /dev/null
         refreshZone
     fi
 }
